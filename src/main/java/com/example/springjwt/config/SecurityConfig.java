@@ -1,5 +1,6 @@
 package com.example.springjwt.config;
 
+import com.example.springjwt.jwt.JWTUtil;
 import com.example.springjwt.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,8 @@ public class SecurityConfig {
 
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
+
+    private final JWTUtil jwtUtil;
     //AuthenticationManager Bean 등록
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -56,7 +59,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http //addFilter메소드로 필터 등록 (우리가 만든 필터, 필터의 위치)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //세션 설정
         //JWT를 통한 인증/인가를 위해서 세션을 STATELESS 상태로 설정하는 것이 중요하다.
         http
