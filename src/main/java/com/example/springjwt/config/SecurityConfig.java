@@ -1,5 +1,6 @@
 package com.example.springjwt.config;
 
+import com.example.springjwt.jwt.JWTFilter;
 import com.example.springjwt.jwt.JWTUtil;
 import com.example.springjwt.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http //addFilter메소드로 필터 등록 (우리가 만든 필터, 필터의 위치)
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //세션 설정
